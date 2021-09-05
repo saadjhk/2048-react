@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { _GameLogicProvider } from './context/2048';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <_GameLogicProvider>
     <App />
-  </React.StrictMode>,
+  </_GameLogicProvider>,
   document.getElementById('root')
 );
 
