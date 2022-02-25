@@ -32,30 +32,31 @@ export function _GameLogicProvider({ children }: { children: React.ReactNode }) 
         });
 
         newState[row][column] = value;
-        console.log(newState)
+        console.log(newState);
         setGameState(newState);
     };
 
-    const getRandomEmptyCell = (gState: number[][]): { row: number, col: number} => {
-        let r = -1, c = -1;
+    const getRandomEmptyCell = (gState: number[][]): { row: number; col: number } => {
+        let r = -1,
+            c = -1;
         gState.forEach((row, ri) => {
             row.forEach((cell, ci) => {
                 if (isNaN(cell)) {
-                    r = ri
-                    c = ci
+                    r = ri;
+                    c = ci;
                 }
-            })
-        })
-        return { row: r, col: c }
-    }
+            });
+        });
+        return { row: r, col: c };
+    };
 
     const cloneGameState = (): number[][] => {
         let clonedState: number[][] = [];
-        gameState.forEach(row => {
-            clonedState.push(row);
-        })
+        gameState.forEach((row) => {
+            clonedState.push(row.concat([]));
+        });
         return clonedState;
-    }
+    };
 
     const spaceLeft = (boardState: number[][]): boolean => {
         let spaceLeft = false;
@@ -63,11 +64,11 @@ export function _GameLogicProvider({ children }: { children: React.ReactNode }) 
             for (let ci = 0; ci < boardState[ri].length; ci++) {
                 if (isNaN(boardState[ri][ci])) {
                     spaceLeft = true;
-                }                        
+                }
             }
         }
         return spaceLeft;
-    }
+    };
 
     const updateStateOnHorizontalSwipe = (direction: "left" | "right") => {
         switch (direction) {
@@ -76,7 +77,8 @@ export function _GameLogicProvider({ children }: { children: React.ReactNode }) 
                 for (let rowIterator = 0; rowIterator < gameState.length; rowIterator++) {
                     for (let colIterator = gameState[rowIterator].length - 1; colIterator > 0; colIterator--) {
                         if (colIterator >= 1 && gameState[rowIterator][colIterator] === gameState[colIterator][rowIterator - 1]) {
-                            gameState[rowIterator][colIterator - 1] = gameState[rowIterator][colIterator] * gameState[rowIterator][colIterator - 1];
+                            gameState[rowIterator][colIterator - 1] =
+                                gameState[rowIterator][colIterator] * gameState[rowIterator][colIterator - 1];
                             gameState[rowIterator][colIterator] = NaN;
                         }
                     }
@@ -91,7 +93,8 @@ export function _GameLogicProvider({ children }: { children: React.ReactNode }) 
                 for (let rowIterator = 0; rowIterator < gameState.length; rowIterator++) {
                     for (let colIterator = gameState[rowIterator].length - 1; colIterator > 0; colIterator--) {
                         if (colIterator >= 1 && gameState[rowIterator][colIterator] === gameState[colIterator][rowIterator - 1]) {
-                            gameState[rowIterator][colIterator - 1] = gameState[rowIterator][colIterator] * gameState[rowIterator][colIterator - 1];
+                            gameState[rowIterator][colIterator - 1] =
+                                gameState[rowIterator][colIterator] * gameState[rowIterator][colIterator - 1];
                             gameState[rowIterator][colIterator] = NaN;
                         }
                     }
@@ -100,8 +103,17 @@ export function _GameLogicProvider({ children }: { children: React.ReactNode }) 
                 if (eCell.row !== -1 && eCell.col !== -1) {
                     updateGameState(_updatedState, eCell.row, eCell.col, 2);
                 }
+                break;                
         }
-    }
+    };
+
+    const updateStateOnVerticalSwipe = (direction: "up") => {
+        switch (direction) {
+            case "up":
+                let _cloneState = cloneGameState();
+                
+        }
+    };
 
     const onSwipeLeft = (cellRow: number, cellColumn: number) => {
         if (spaceLeft(gameState)) {
@@ -119,6 +131,10 @@ export function _GameLogicProvider({ children }: { children: React.ReactNode }) 
 
     const onSwipeUp = (cellRow: number, cellColumn: number) => {
         console.log(`Up ${cellRow} ${cellColumn}: ${gameState[cellRow][cellColumn]}`);
+        if (spaceLeft(gameState)) {
+            console.log(`Right ${cellRow} ${cellColumn}: ${gameState[cellRow][cellColumn]}`);
+            updateStateOnVerticalSwipe("up");
+        }
     };
 
     const onSwipeDown = (cellRow: number, cellColumn: number) => {
@@ -132,11 +148,7 @@ export function _GameLogicProvider({ children }: { children: React.ReactNode }) 
         updateGameState(gameState, randomRow, randomCol, 2);
     }, []);
 
-    return (
-        <Provider value={{ gameState, onSwipeLeft, onSwipeRight, onSwipeDown, onSwipeUp }}>
-            {children}
-        </Provider>
-    );
+    return <Provider value={{ gameState, onSwipeLeft, onSwipeRight, onSwipeDown, onSwipeUp }}>{children}</Provider>;
 }
 
 export function useGameLogic(): GameLogicContext {
