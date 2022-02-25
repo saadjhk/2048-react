@@ -16,8 +16,36 @@ function App() {
             </div>
 
             <div>
-                <input type="number" name="input-row" id="input-row" placeholder="Row" />
-                <input type="number" name="input-column" id="input-column" placeholder="Column" />
+                <input
+                    type="number"
+                    name="input-row"
+                    id="input-row"
+                    placeholder="Row"
+                    onChange={(evt) => {
+                        let row = +evt.target.value;
+                        row >= 1 && row <= 4
+                            ? setSelectedCell((state) => {
+                                  state.row = row;
+                                  return state;
+                              })
+                            : console.error(new Error("Invalid input."));
+                    }}
+                />
+                <input
+                    type="number"
+                    name="input-column"
+                    id="input-column"
+                    placeholder="Column"
+                    onChange={(evt) => {
+                        let col = +evt.target.value;
+                        col >= 1 && col <= 4
+                            ? setSelectedCell((state) => {
+                                  state.column = col;
+                                  return state;
+                              })
+                            : console.error(new Error("Invalid input."));
+                    }}
+                />
             </div>
             <button onClick={() => (onSwipeUp ? onSwipeUp(2, 3) : null)}>Swipe Up</button>
             <button onClick={() => (onSwipeDown ? onSwipeDown(2, 3) : null)}>Swipe Down</button>
